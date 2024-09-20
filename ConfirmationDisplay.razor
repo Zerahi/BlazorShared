@@ -1,0 +1,46 @@
+﻿@typeparam T
+@using Syncfusion.Blazor.Popups
+
+<SfDialog Width=@Width Height=@Height IsModal="true" @bind-Visible="Visible">
+    <DialogTemplates>
+        <Header> Confirm Script </Header>
+        <Content>
+            @ChildContent(Data)
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Save" OnClick=ConfirmLocal />
+        <DialogButton Content="Cance" IsPrimary=true OnClick=Cancel />
+    </DialogButtons>
+</SfDialog>
+
+@code {
+    [Parameter] public RenderFragment<T> ChildContent { get; set; }
+    [Parameter] public T Data { get; set; }
+    [Parameter] public Action<T> Confirm { get; set; }
+    [Parameter] public string Width { get; set; } = "300px";
+    [Parameter] public string Height { get; set; } = "150px";
+    bool Visible;
+
+    public void ShowDialogue() {
+        Visible = true;
+        StateHasChanged();
+    }
+
+    public void ShowDialogue(T data) {
+        Data = data;
+        Visible = true;
+        StateHasChanged();
+    }
+
+    void ConfirmLocal() {
+        if (Confirm != null) Confirm(Data);
+        Visible = false;
+        StateHasChanged();
+    }
+
+    void Cancel() {
+        Visible = false;
+        StateHasChanged();
+    }
+}

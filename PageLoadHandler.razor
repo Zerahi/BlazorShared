@@ -1,0 +1,17 @@
+﻿@using Syncfusion.Blazor.Spinner
+
+@if(Loaded == true) {
+    @ChildContent
+} else  if (Loaded == false) {
+    <error>@ErrorMessage</error>
+} else {
+    <div class="BS-spintarget">
+        <SfSpinner Visible=true Size="70" />
+    </div>
+}
+
+@code {
+    [Parameter] public bool? Loaded { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string ErrorMessage { get; set; } = "Page Failed to Load";
+}

@@ -1,0 +1,77 @@
+﻿@using Syncfusion.Blazor.Buttons
+@typeparam T
+
+<div class=@(AddingItem == null? "AID_Margin": "AID_Margin AID_Border")>
+    @if (AddingItem != null) {
+        <div>
+            @ChildContent(AddingItem)
+        </div>
+        @ErrorMessage
+        <div>
+            <SfButton Content=@($"Submit {(Header == null? typeof(T).Name:Header)}") OnClick=CompleteAdd />
+        </div>
+    }
+    <div>
+        <SfButton Content=@(AddingItem == null? $"{(EditItem == null? "Add":"Edit")} {(Header == null? typeof(T).Name:Header)}":"Cancel") OnClick=StartAdd />
+        @if (EditItem != null && AddingItem == null) {
+            <SfButton Content="ClearEdit" OnClick="() => EditItem = default(T)" />
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public Func<T, string?>? AddItem { get; set; }
+    [Parameter] public RenderFragment<T> ChildContent { get; set; }
+    [Parameter] public string Header { get; set; }
+    [Parameter] public T EditItem { get; set; }
+
+    T? AddingItem;
+    string? ErrorMessage;
+
+    void StartAdd() {
+        ErrorMessage = "";
+        if (AddingItem == null) {
+            AddingItem = (T)Activator.CreateInstance<T>();
+            if (EditItem != null) {
+                foreach (var prop in typeof(T).GetProperties()) {
+                    if (prop.CanWrite) {
+                        prop.SetValue(AddingItem, prop.GetValue(EditItem));
+                    }
+                }
+            }
+        } else {
+            AddingItem = default(T);
+        }
+        StateHasChanged();
+    }
+
+    public static T Clone<T>(T original) where T : new() {
+        var clone = new T();
+        foreach (var prop in typeof(T).GetProperties()) {
+            if (prop.CanWrite) {
+                prop.SetValue(clone, prop.GetValue(original));
+            }
+        }
+        return clone;
+    }
+
+    void CompleteAdd() {
+        ErrorMessage = "";
+        if (AddItem == null) {
+            ErrorMessage = "No Adding Method in code";
+            return;
+        }
+        if (AddingItem == null) {
+            ErrorMessage = "No Adding item";
+            return;
+        }
+        var ret = AddItem(AddingItem);
+        if (ret == null) {
+            StartAdd();
+        }
+        else {
+            ErrorMessage = ret;
+            StateHasChanged();
+        }
+    }
+}

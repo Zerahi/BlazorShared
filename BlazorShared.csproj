@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="26.2.11" />
+    <PackageReference Include="Syncfusion.Blazor.Charts" Version="26.2.11" />
+    <PackageReference Include="Syncfusion.Blazor.Core" Version="26.2.11" />
+    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="26.2.11" />
+    <PackageReference Include="Syncfusion.Blazor.Grid" Version="26.2.11" />
+    <PackageReference Include="Syncfusion.Blazor.Inputs" Version="26.2.11" />
+    <PackageReference Include="Syncfusion.Blazor.Spinner" Version="26.2.11" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="26.2.11" />
+  </ItemGroup>
+
+</Project>

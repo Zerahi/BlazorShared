@@ -1,0 +1,12 @@
+﻿.AID_Border {
+    border: solid;
+    border-color: slategray;
+    width: fit-content;
+    height: fit-content;
+    display: block;
+    padding:5px;
+    gap:5px;
+}
+.AID_Margin {
+    margin: 3px;
+}

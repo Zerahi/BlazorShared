@@ -1,0 +1,46 @@
+﻿<button class="@css" @onclick=Click disabled="@Disabled">
+    <div>
+        @ChildContent
+        @Content
+    </div>
+</button>
+
+@code {
+    [Parameter] public Action OnClick { get; set; }
+    [Parameter] public Func<Task> OnClickAsync { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public string Content { get; set; }
+    [Parameter] public string CssClass { get; set; }
+    [Parameter] public BtnSize Size { get; set; } = BtnSize.Medium;
+    [Parameter] public bool Text { get; set; }
+    [Parameter] public bool Header { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    string css { get { return $"{CssClass} {Sizes.Single(x => x.Key == Size).Value} {Color} "; } }
+
+    string Color { get { if (Header) { return "BSHeader"; } else if (Text) { return "BSTextButton"; } else return "BSSelectButton"; } }
+
+    public enum BtnSize { Large, Medium, Small }
+
+    public static List<KeyVal<BtnSize, string>> Sizes = new(){
+        new KeyVal<BtnSize, string>(BtnSize.Large, ""),
+        new KeyVal<BtnSize, string>(BtnSize.Small, "BSButtonSmall"),
+        new KeyVal<BtnSize, string>(BtnSize.Medium, "BSButtonMedium")
+    };
+
+    void Click() {
+        if (OnClickAsync != null && !Disabled) {
+            Disabled = true;
+            _ = RunAsync();
+            _ = InvokeAsync(StateHasChanged);
+        }
+        if (OnClick != null) {
+            OnClick();
+        }
+    }
+
+    async Task RunAsync() {
+        await OnClickAsync();
+        Disabled = false;
+        _ = InvokeAsync(StateHasChanged);
+    }
+}

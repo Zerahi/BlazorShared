@@ -1,0 +1,56 @@
+﻿@using Syncfusion.Blazor.Buttons
+@typeparam T
+
+<div class=@(AddingItem == null? "AID_Margin": "AID_Margin AID_Border")>
+    @if (AddingItem != null) {
+        <div>
+            @ChildContent(AddingItem)
+        </div>
+        @ErrorMessage
+        <div>
+            <SfButton Content="Submit" OnClick=CompleteAdd />
+        </div>
+    }
+    <div>
+        <SfButton Content=@(AddingItem == null? $"Add {(Header == null? typeof(T).Name:Header)}":"Cancel") OnClick=StartAdd />
+    </div>
+</div>
+
+@code {
+    [Parameter] public Func<T, string?>? AddItem { get; set; }
+    [Parameter] public RenderFragment<T> ChildContent { get; set; }
+    [Parameter] public string Header { get; set; }
+
+
+    T? AddingItem;
+    string? ErrorMessage;
+
+    void StartAdd() {
+        ErrorMessage = "";
+        if (AddingItem == null) {
+            AddingItem = (T)Activator.CreateInstance<T>();
+        }
+        else AddingItem = default(T);
+        StateHasChanged();
+    }
+
+    void CompleteAdd() {
+        ErrorMessage = "";
+        if (AddItem == null) {
+            ErrorMessage = "No Adding Method in code";
+            return;
+        }
+        if (AddingItem == null) {
+            ErrorMessage = "No Adding item";
+            return;
+        }
+        var ret = AddItem(AddingItem);
+        if (ret == null) {
+            StartAdd();
+        }
+        else {
+            ErrorMessage = ret;
+            StateHasChanged();
+        }
+    }
+}
