@@ -3,6 +3,16 @@
 
 <div class=@(AddingItem == null? "AID_Margin": "AID_Margin AID_Border")>
     @if (AddingItem != null) {
+        @if (Top) {
+            <div class="BS-Inline">
+                <div>
+                    <SfButton Content=@($"Submit {(Header == null? typeof(T).Name:Header)}") OnClick=CompleteAdd />
+                </div>
+                <div>
+                    <SfButton Content=@(AddingItem == null? $"{(EditItem == null? "Add":"Edit")} {(Header == null? typeof(T).Name:Header)}":"Cancel") OnClick=StartAdd />
+                </div>
+            </div>
+        }
         <div>
             @ChildContent(AddingItem)
         </div>
@@ -11,12 +21,11 @@
             <SfButton Content=@($"Submit {(Header == null? typeof(T).Name:Header)}") OnClick=CompleteAdd />
         </div>
     }
-    <div>
-        <SfButton Content=@(AddingItem == null? $"{(EditItem == null? "Add":"Edit")} {(Header == null? typeof(T).Name:Header)}":"Cancel") OnClick=StartAdd />
-        @if (EditItem != null && AddingItem == null) {
-            <SfButton Content="ClearEdit" OnClick="() => EditItem = default(T)" />
-        }
-    </div>
+    @if (Bottom) {
+        <div>
+            <SfButton Content=@(AddingItem == null? $"{(EditItem == null? "Add":"Edit")} {(Header == null? typeof(T).Name:Header)}":"Cancel") OnClick=StartAdd />
+        </div>
+    }
 </div>
 
 @code {
@@ -24,6 +33,8 @@
     [Parameter] public RenderFragment<T> ChildContent { get; set; }
     [Parameter] public string Header { get; set; }
     [Parameter] public T EditItem { get; set; }
+    [Parameter] public bool Top { get; set; } = false;
+    [Parameter] public bool Bottom { get; set; } = true;
 
     T? AddingItem;
     string? ErrorMessage;
@@ -68,8 +79,7 @@
         var ret = AddItem(AddingItem);
         if (ret == null) {
             StartAdd();
-        }
-        else {
+        } else {
             ErrorMessage = ret;
             StateHasChanged();
         }
